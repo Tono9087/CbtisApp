@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -273,7 +274,8 @@ fun RoutesScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -394,8 +396,7 @@ fun CreditsBubble(isDarkMode: Boolean, onDismiss: () -> Unit) {
                     color = if (isDarkMode) Color.White else Color.Black
                 )
                 Text(
-                    text = "best developer of the world forever and ever " +
-                            "y pablo vale pa pura madre",
+                    text = "best developer of the world forever and ever ",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (isDarkMode) Color.White.copy(alpha = 0.7f) else Color.Gray,
