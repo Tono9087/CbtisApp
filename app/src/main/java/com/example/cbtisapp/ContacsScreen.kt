@@ -434,7 +434,6 @@ fun ContactsScreen() {
                                     )
                                     institutionalContacts = institutionalContacts + newContact
                                     
-                                    // Reset and close
                                     newName = ""
                                     newRelation = ""
                                     newNumber = ""
@@ -517,7 +516,6 @@ fun ContactsScreen() {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Grid layout using Rows to avoid nested scrolling issues
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Box(modifier = Modifier.weight(1f)) { EmergencyGridItem(emergencyGridContacts[0], isDarkMode) }
                 Box(modifier = Modifier.weight(1f)) { EmergencyGridItem(emergencyGridContacts[1], isDarkMode) }
@@ -565,7 +563,6 @@ fun ContactsScreen() {
                 }
             }
 
-            // Extra padding for FloatingActionButton overlap avoidance
             Spacer(modifier = Modifier.height(80.dp))
         }
     }

@@ -153,13 +153,6 @@ fun MainAppNavigation() {
                         unselectedTextColor = Color.Gray
                     )
                 )
-                /*NavigationBarItem(
-                    selected = false,
-                    onClick = { /* Navigation */ },
-                    label = { Text("Alertas", fontSize = 12.sp) },
-                    icon = { Icon(Icons.Default.Notifications, contentDescription = "Alerts") },
-                    colors = NavigationBarItemDefaults.colors(unselectedIconColor = Color.Gray, unselectedTextColor = Color.Gray)
-                )*/
             }
         }
     ) { innerPadding ->
