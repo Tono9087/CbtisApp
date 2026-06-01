@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 
 data class Edificio(
     val nombre: String,
-    val id: String
+    val id: String // Este ID coincidirá con el nombre del video o recurso
 )
 
 data class ZonaEvacuacion(
@@ -74,27 +74,35 @@ fun SelectionScreen(onEdificioSelected: (String) -> Unit) {
     val themeManager = remember { ThemeManager(context) }
     val isDarkMode by themeManager.isDarkModeFlow.collectAsState(initial = false)
 
+    // Ajustamos los IDs para que hagan match directo con tus archivos .mp4
     val zonas = remember {
         listOf(
             ZonaEvacuacion(
                 puntoReunion = "Canchas",
                 edificios = listOf(
-                    Edificio("Edificio A", "A"), Edificio("Edificio B", "B"),
-                    Edificio("Electromecánica", "EM"), Edificio("Robótica", "RB"),
-                    Edificio("EBC", "EBC")
+                    Edificio("Edificio A", "a_canchas"),
+                    Edificio("Edificio B", "b_canchas"),
+                    Edificio("Electromecánica", "em_canchas"),
+                    Edificio("Robótica", "rb_canchas"),
+                    Edificio("EBC", "ebc_canchas"),
+                    Edificio("Motorolitas", "moto_canchas"),
+                    Edificio("Cafetería", "cafe_canchas")
                 )
             ),
             ZonaEvacuacion(
                 puntoReunion = "Bicéfalo",
                 edificios = listOf(
-                    Edificio("Electrónica", "EL"), Edificio("Edificio J", "J"),
-                    Edificio("Cómputo", "CP"), Edificio("Edificio S", "S")
+                    Edificio("Electrónica", "el_bicefalo"),
+                    Edificio("Edificio J", "j_bicefalo"),
+                    Edificio("Cómputo", "cp_bicefalo"),
+                    Edificio("Edificio S", "s_bicefalo")
                 )
             ),
             ZonaEvacuacion(
                 puntoReunion = "Caseta",
                 edificios = listOf(
-                    Edificio("Edificio C", "C"), Edificio("Administrativo", "Ad")
+                    Edificio("Edificio C", "c_caseta"),
+                    Edificio("Administrativo", "ad_caseta")
                 )
             )
         )

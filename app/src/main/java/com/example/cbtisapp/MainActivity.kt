@@ -2,12 +2,12 @@ package com.example.cbtisapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -37,11 +37,9 @@ import com.example.cbtisapp.ui.theme.CbtisAppTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -50,33 +48,23 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
 import kotlinx.coroutines.launch
 
-// 📍 Coordenadas de los Puntos de Reunión del Plantel
+enum class Screen {
+    Home,
+    MapSelection,
+    Protocols,
+    Contacts,
+    Player
+}
+
 object PuntosReunion {
     val BICEFALO = LatLng(28.616682, -106.029799)
     val CANCHAS = LatLng(28.614407, -106.029071)
     val CASETA = LatLng(28.616681, -106.028659)
 }
 
-enum class Screen {
-    Home,
-    MapSelection,
-    Protocols,
-    Contacts,
-}
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 🚀 Inicializar Google Maps preventivamente para evitar crashes con BitmapDescriptorFactory
-        try {
-            MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LATEST) {
-                Log.d("MapsInit", "Google Maps SDK initialized with renderer: ${it.name}")
-            }
-        } catch (e: Exception) {
-            Log.e("MapsInit", "Error initializing Maps SDK", e)
-        }
-
         setContent {
             CbtisAppTheme {
                 Surface(
@@ -90,7 +78,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppNavigation() {
     val context = LocalContext.current
@@ -99,6 +87,7 @@ fun MainAppNavigation() {
     val isDarkMode by themeManager.isDarkModeFlow.collectAsState(initial = false)
 
     var currentScreen by remember { mutableStateOf(Screen.Home) }
+    var selectedEdificioId by remember { mutableStateOf("") }
     var showCredits by remember { mutableStateOf(false) }
 
     val cbtis122 = LatLng(28.615472, -106.029222)
@@ -121,7 +110,8 @@ fun MainAppNavigation() {
             NavigationBar(
                 containerColor = if (isDarkMode) Color(0xFF1E1E1E) else Color.White,
                 tonalElevation = 8.dp,
-                modifier = Modifier.clip(RoundedCornerShape(2.dp))
+                modifier = Modifier
+                    .clip(RoundedCornerShape(2.dp))
             ) {
                 NavigationBarItem(
                     selected = currentScreen == Screen.Home,
@@ -170,9 +160,6 @@ fun MainAppNavigation() {
                     label = { Text("Contactos", fontSize = 12.sp) },
                     icon = { Icon(Icons.Default.ContactPhone, contentDescription = "Contacts") },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color(0xFF830122),
-                        selectedTextColor = Color(0xFF830122),
-                        indicatorColor = if (isDarkMode) Color(0xFF2D2D2D) else Color(0xFFE9ECEF),
                         unselectedIconColor = Color.Gray,
                         unselectedTextColor = Color.Gray
                     )
@@ -261,9 +248,17 @@ fun MainAppNavigation() {
 
                     Screen.MapSelection -> {
                         SelectionScreen(
-                            onEdificioSelected = {
-                                currentScreen = Screen.Home
+                            onEdificioSelected = { id ->
+                                selectedEdificioId = id
+                                currentScreen = Screen.Player
                             }
+                        )
+                    }
+
+                    Screen.Player -> {
+                        RoutePlayerScreen(
+                            edificioId = selectedEdificioId,
+                            onBackClick = { currentScreen = Screen.MapSelection }
                         )
                     }
 
@@ -283,20 +278,10 @@ fun MainAppNavigation() {
 @Composable
 fun RoutesScreenContent(
     isDarkMode: Boolean,
-    cameraPositionState: CameraPositionState,
+    cameraPositionState: com.google.maps.android.compose.CameraPositionState,
     isLocationGranted: Boolean,
     onNavigateToSelection: () -> Unit
 ) {
-    // 🛠️ Definición del marcador verde de Protección Civil (con fallback para evitar crashes)
-    val greenMarker = remember {
-        try {
-            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
-        } catch (_: Exception) {
-            // Fallback al marcador rojo por defecto si falla la inicialización
-            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -358,37 +343,26 @@ fun RoutesScreenContent(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             shape = RoundedCornerShape(24.dp)
         ) {
-            // 🛰️ GoogleMap estructurado como bloque contenedor
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
                 properties = MapProperties(
                     isMyLocationEnabled = isLocationGranted,
-                    mapType = MapType.HYBRID
+                    mapType = MapType.HYBRID,
+                    mapStyleOptions = if (isDarkMode) MapStyleOptions(MapStyles.DARK_STYLE) else null
                 )
             ) {
-                // 🟢 Marcador 1: Bicéfalo
                 Marker(
                     state = rememberUpdatedMarkerState(position = PuntosReunion.BICEFALO),
-                    title = "Punto de Reunión: Bicéfalo",
-                    snippet = "Zona segura: Electrónica, Edificio J, Cómputo, Edificio S",
-                    icon = greenMarker
+                    title = "Punto de Reunión BICEFALO"
                 )
-
-                // 🟢 Marcador 2: Canchas
                 Marker(
                     state = rememberUpdatedMarkerState(position = PuntosReunion.CANCHAS),
-                    title = "Punto de Reunión: Canchas",
-                    snippet = "Zona segura: Edificios A y B, Electromecánica, Robótica, EBC",
-                    icon = greenMarker
+                    title = "Punto de Reunión CANCHAS"
                 )
-
-                // 🟢 Marcador 3: Caseta
                 Marker(
                     state = rememberUpdatedMarkerState(position = PuntosReunion.CASETA),
-                    title = "Punto de Reunión: Caseta",
-                    snippet = "Zona segura: Edificio C y Administrativo",
-                    icon = greenMarker
+                    title = "Punto de Reunión CASETA"
                 )
             }
         }

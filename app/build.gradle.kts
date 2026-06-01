@@ -55,4 +55,7 @@ dependencies {
     implementation(libs.maps.compose)
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.common)
 }
