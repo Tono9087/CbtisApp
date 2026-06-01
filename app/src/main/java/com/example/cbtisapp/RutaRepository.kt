@@ -23,23 +23,4 @@ object RutaRepository {
             else -> R.raw.ruta_cafe_canchas
         }
     }
-
-    fun obtenerNombreEdificio(edificioId: String): String {
-        return when (edificioId) {
-            "a_canchas" -> "Edificio A"
-            "b_canchas" -> "Edificio B"
-            "em_canchas" -> "Electromecánica"
-            "rb_canchas" -> "Robótica"
-            "ebc_canchas" -> "EBC"
-            "moto_canchas" -> "Motorolitas"
-            "cafe_canchas" -> "Cafetería"
-            "el_bicefalo" -> "Electrónica"
-            "j_bicefalo" -> "Edificio J"
-            "cp_bicefalo" -> "Cómputo"
-            "s_bicefalo" -> "Edificio S"
-            "c_caseta" -> "Edificio C"
-            "ad_caseta" -> "Administrativo"
-            else -> "General"
-        }
-    }
 }

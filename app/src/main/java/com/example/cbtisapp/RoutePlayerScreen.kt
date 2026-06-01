@@ -1,8 +1,6 @@
 package com.example.cbtisapp
 
-import android.net.Uri
 import kotlin.OptIn
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,9 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +28,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import androidx.core.net.toUri
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +41,6 @@ fun RoutePlayerScreen(
     val themeManager = remember { ThemeManager(context) }
     val isDarkMode by themeManager.isDarkModeFlow.collectAsState(initial = false)
 
-    val colorGuinda = if (isDarkMode) Color(0xFFFF4D6D) else Color(0xFF830122)
     val colorFondo = if (isDarkMode) Color(0xFF121212) else Color(0xFFFDFBFB)
     val colorTarjetaDesc = if (isDarkMode) Color(0xFF1E1E1E) else Color(0xFFFFF8F8)
     val colorBordeDesc = if (isDarkMode) Color(0xFF3A1E24) else Color(0xFFFCE2E2)
@@ -85,7 +80,7 @@ fun RoutePlayerScreen(
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
-            val videoUri = Uri.parse("android.resource://${context.packageName}/$videoResId")
+            val videoUri = "android.resource://${context.packageName}/$videoResId".toUri()
             setMediaItem(MediaItem.fromUri(videoUri))
             repeatMode = Player.REPEAT_MODE_ALL
             prepare()
