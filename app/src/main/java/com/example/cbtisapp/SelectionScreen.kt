@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 
 data class Edificio(
     val nombre: String,
-    val id: String // Este ID coincidirá con el nombre del video o recurso
+    val id: String
 )
 
 data class ZonaEvacuacion(
@@ -74,7 +74,6 @@ fun SelectionScreen(onEdificioSelected: (String) -> Unit) {
     val themeManager = remember { ThemeManager(context) }
     val isDarkMode by themeManager.isDarkModeFlow.collectAsState(initial = false)
 
-    // Ajustamos los IDs para que hagan match directo con tus archivos .mp4
     val zonas = remember {
         listOf(
             ZonaEvacuacion(
