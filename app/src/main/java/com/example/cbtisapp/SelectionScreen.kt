@@ -101,7 +101,9 @@ fun SelectionScreen(onEdificioSelected: (String) -> Unit) {
                 puntoReunion = "Caseta",
                 edificios = listOf(
                     Edificio("Edificio C", "c_caseta"),
-                    Edificio("Administrativo", "ad_caseta")
+                    Edificio("Administrativo", "ad_caseta"),
+                    Edificio("Biblioteca", "biblio_caseta"),
+                    Edificio("Control Escolar", "control_caseta")
                 )
             )
         )

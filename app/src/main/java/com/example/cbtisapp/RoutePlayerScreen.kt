@@ -56,6 +56,7 @@ fun RoutePlayerScreen(
                     "ebc_canchas" -> "EBC"
                     "em_canchas" -> "Electromecánica"
                     "moto_canchas" -> "Motorolitas"
+                    "rb_canchas" -> "Robótica"
                     else -> "Módulo"
                 }
                 Pair(nom, "Canchas")
@@ -65,12 +66,19 @@ fun RoutePlayerScreen(
                     "el_bicefalo" -> "Electrónica"
                     "j_bicefalo" -> "Edificio J"
                     "cp_bicefalo" -> "Cómputo"
-                    else -> "Edificio S"
+                    "s_bicefalo" -> "Edificio S"
+                    else -> "Módulo"
                 }
                 Pair(nom, "Bicéfalo")
             }
             else -> {
-                val nom = if (edificioId == "c_caseta") "Edificio C" else "Administrativo"
+                val nom = when(edificioId) {
+                    "c_caseta" -> "Edificio C"
+                    "ad_caseta" -> "Administrativo"
+                    "biblio_caseta" -> "Biblioteca"
+                    "control_caseta" -> "Control Escolar"
+                    else -> "Módulo"
+                }
                 Pair(nom, "Caseta")
             }
         }

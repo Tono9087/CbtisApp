@@ -124,7 +124,18 @@ fun ContactItem(contact: Contact, isDarkMode: Boolean) {
                         .border(1.dp, borderColor, CircleShape),
                     contentScale = ContentScale.Crop
                 )
-            } else {
+            } else if  (contact.name == "Kelvin") {
+                Image(
+                    painter = painterResource(id = R.drawable.kevin_contact),
+                    contentDescription = "Foto de ${contact.name}",
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .border(1.dp, borderColor, CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            }
+            else {
                 Box(
                     modifier = Modifier
                         .size(56.dp)
@@ -286,7 +297,8 @@ fun ContactsScreen() {
     var institutionalContacts by remember {
         mutableStateOf(
             listOf(
-                Contact("Natalia", "Loca Homeless", "1234567", "614")
+                Contact("Natalia", "Loca Homeless", "5352442", "614"),
+                Contact( "Kelvin", "Pou", "3988939", "614")
             )
         )
     }
